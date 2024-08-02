@@ -1,29 +1,19 @@
+
 from tkinter import*
 from tkinter import messagebox
-import random,os,tempfile,subprocess
+import random,os,tempfile,subprocess,smtplib
+
+
+
+
+     
+
+
+
 
 
 def clear():
-     bike1Entry.insert(0,0)
-     bike2Entry.insert(0,0)
-     bike3Entry.insert(0,0)
-     bike4Entry.insert(0,0)
-     bike5Entry.insert(0,0)
-     bike6Entry.insert(0,0)
-
-     car1Entry.insert(0,0)
-     car2Entry.insert(0,0)
-     car3Entry.insert(0,0)
-     car4Entry.insert(0,0)
-     car5Entry.insert(0,0)
-     car6Entry.insert(0,0)
-
-     other1Entry.insert(0,0)
-     other2Entry.insert(0,0)
-     other3Entry.insert(0,0)
-     other4Entry.insert(0,0)
-     other5Entry.insert(0,0)
-     other6Entry.insert(0,0)
+    
 
 
      bikktaxEntry.delete(0,END)
@@ -37,24 +27,81 @@ def clear():
      bikkkkEntry.delete(0,END)
 
 
+     nameEntry.delete(0,END)
+     phoneEntry.delete(0,END)
+     billEntry.delete(0,END)
+
+
+     textarea.delete(1.0,END)
+
+
 
 
 
 def send_email():
-     #if textarea.get(1.0,END)=='\n':
-      #    messagebox.showerror('Error','Bill is empty')
-     #else:
+     def send_gmail():
+      try:
+          ob=smtplib.SMTP('smtp.gail.com',587)
+          ob.starttls()
+          ob.login(senderEntry.get(),passwordEntry.get())
+          message=email_textarea.get(1.0,END)
+          ob.sendmail(senderEntry.get(),reciverEntry.get(),message)
+          ob.quit()
+          messagebox.showeinfo('success','Bill is Successfully sent',parent=root1)
+          root1.destroy()
+      except:
+           messagebox.showerror('Error','Something went wrog , please try again')
+     if textarea.get(1.0,END)=='\n':
+       messagebox.showerror('Error','Bill is empty')
+     else:
           root1=Toplevel()
-          root1.title('send gmail')
-          root1.config(bg='white')
+          root1.grab_set()
+          root1.title('send Gmail')
           root1.resizable(0,0)
-         
           senderFrame=LabelFrame(root1,text='SENDER',font=('arial',16,'bold'),bd=6,bg='gray20',fg='white')
-          senderFrame.grid(row=0,colume=0)
+          senderFrame.grid(row=0,column=0,padx=40,pady=20)
 
-          gamilIdLabel=Label(senderFrame,text="Sender's Email",font=('arial',14,'bold'))
-          gamilIdLabel.grid(row=0,column=0)
+          senderIdLabel=Label(senderFrame,text="sender's Email",font=('arial',14,'bold'),bd=6,bg='gray20',fg='white')
+          senderIdLabel.grid(row=0,column=0,padx=10,pady=8)
 
+          senderEntry=Entry(senderFrame,font=('arial',14,'bold'),bd=2,width=23,relief=RIDGE)
+          senderEntry.grid(row=0,column=1)
+
+
+          passwordIdLabel=Label(senderFrame,text="Passowrd",font=('arial',14,'bold'),bd=6,bg='gray20',fg='white')
+          passwordIdLabel.grid(row=1,column=0,padx=10,pady=8)
+
+          passwordEntry=Entry(senderFrame,font=('arial',14,'bold'),bd=2,width=23,relief=RIDGE,show='*')
+          passwordEntry.grid(row=1,column=1)
+         
+
+          recipientFrame=LabelFrame(root1,text='RECIPIENT',font=('arial',16,'bold'),bd=6,bg='gray20',fg='white')
+          recipientFrame.grid(row=1,column=0,padx=40,pady=20)
+
+
+          reciverIdLabel=Label(recipientFrame,text="Email Address",font=('arial',14,'bold'),bd=6,bg='gray20',fg='white')
+          reciverIdLabel.grid(row=0,column=0,padx=10,pady=8)
+
+          reciverEntry=Entry(recipientFrame,font=('arial',14,'bold'),bd=2,width=23,relief=RIDGE)
+          reciverEntry.grid(row=0,column=1,padx=10,pady=8)
+
+
+          messageLabel=Label(recipientFrame,text="Message",font=('arial',14,'bold'),bd=6,bg='gray20',fg='white')
+          messageLabel.grid(row=1,column=0,padx=10,pady=8)
+
+          email_textarea=Text(recipientFrame,font=('arial',14,'bold'),bd=2,relief=SUNKEN,width=42,height=11)
+          email_textarea.grid(row=2,column=0,columnspan=2)
+          email_textarea.delete(1.0,END)
+          email_textarea.insert(END,textarea.get(1.0,END).replace('=','').replace('-','').replace('\t\t\t','\t\t'))
+
+
+          sendButton=Button(root1,text='SEND',font=('arial',16,'bold'),width=15,command=send_gmail)
+          sendButton.grid(row=2,column=0,pady=20)
+         
+
+
+
+         
           root1.mainloop()
 
 
@@ -67,6 +114,10 @@ def print_bill():
           file=tempfile.mktemp('.txt')
           open(file,'w').write(textarea.get(1.0,END))
           subprocess.call(['open',file])
+
+
+
+
 
 
 def search_bill():
